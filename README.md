@@ -38,10 +38,6 @@ Real-time risk ranking, critical device counts, and unacknowledged alerts — al
 </tr>
 </table>
 
-> 💡 *Add your screenshots here — drop them in `docs/screenshots/` and reference them like:*
-> `![Overview Dashboard](docs/screenshots/overview.png)`
-> *(Lead with the Overview and Live Monitoring views — they sell the project in one glance.)*
-
 ---
 
 ## 🩺 The problem
