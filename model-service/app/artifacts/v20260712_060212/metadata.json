@@ -1,0 +1,77 @@
+{
+  "version": "v20260712_060212",
+  "trained_at": "2026-07-12T06:02:12.400260",
+  "feature_columns": [
+    "voltage",
+    "fan_speed",
+    "power_consumption",
+    "vibration",
+    "temperature",
+    "cpu_utilization",
+    "battery_health",
+    "temperature_7d_mean",
+    "vibration_7d_mean",
+    "power_consumption_7d_mean",
+    "battery_health_7d_mean",
+    "temperature_7d_trend_pct",
+    "vibration_7d_trend_pct",
+    "power_consumption_7d_trend_pct",
+    "battery_health_7d_trend_pct",
+    "errors_7d",
+    "errors_30d",
+    "days_since_maint_cooling",
+    "days_since_maint_power",
+    "days_since_maint_sensor",
+    "days_since_maint_battery",
+    "age_years"
+  ],
+  "split_date": "2015-10-01",
+  "classifier_metrics": {
+    "7d": {
+      "auc": 0.6740656015350809,
+      "precision": 0.5587044534412956,
+      "recall": 0.12234042553191489,
+      "f1": 0.20072727272727273,
+      "positive_rate_test": 0.12129032258064516
+    },
+    "30d": {
+      "auc": 0.5952083021409766,
+      "precision": 0.4951214448827071,
+      "recall": 0.6158017041053447,
+      "f1": 0.5489067894131185,
+      "positive_rate_test": 0.4164516129032258
+    },
+    "90d": {
+      "auc": 0.5359061539578442,
+      "precision": 0.5760739532354541,
+      "recall": 0.9934358589647412,
+      "f1": 0.7292627521167481,
+      "positive_rate_test": 0.5733333333333334
+    }
+  },
+  "rul_metrics": {
+    "mae_days": 45.76497333572607
+  },
+  "error_subsystem_associations": {
+    "Cooling Fan": {
+      "avg_errors_7d_before_failure": 0.0,
+      "avg_days_since_maint_before_failure": 0.0,
+      "share_of_failures": 0.0
+    },
+    "Power Supply Unit": {
+      "avg_errors_7d_before_failure": 0.0,
+      "avg_days_since_maint_before_failure": 0.0,
+      "share_of_failures": 0.0
+    },
+    "Sensor Calibration Module": {
+      "avg_errors_7d_before_failure": 0.0,
+      "avg_days_since_maint_before_failure": 0.0,
+      "share_of_failures": 0.0
+    },
+    "Battery": {
+      "avg_errors_7d_before_failure": 0.0,
+      "avg_days_since_maint_before_failure": 0.0,
+      "share_of_failures": 0.0
+    }
+  }
+}

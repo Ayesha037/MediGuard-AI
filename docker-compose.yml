@@ -1,0 +1,56 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: mediguard-postgres
+    environment:
+      POSTGRES_USER: mediguard
+      POSTGRES_PASSWORD: mediguard_dev_password
+      POSTGRES_DB: mediguard
+    ports:
+      - "5432:5432"
+    volumes:
+      - mediguard_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mediguard"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+    container_name: mediguard-backend
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_USER: mediguard
+      POSTGRES_PASSWORD: mediguard_dev_password
+      POSTGRES_DB: mediguard
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+      - ./data:/app/data   # place PdM_*.csv / ai4i2020.csv here for ingestion
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: mediguard-frontend
+    depends_on:
+      - backend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      VITE_API_BASE_URL: http://localhost:8000/api/v1
+    command: npm run dev -- --host
+
+volumes:
+  mediguard_pgdata:

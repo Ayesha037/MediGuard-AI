@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+
+# ML artifacts (regenerate locally with `python -m app.ml.train`)
+backend/app/ml/artifacts/*/
+backend/.env
+backend/.env.local
+
+# Node / frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.env.local
+
+# Data (user-provided CSVs — not committed)
+data/*.csv
+ml-pipeline/data/*.parquet
+ml-pipeline/data/*.csv
+
+# OS / editor
+.DS_Store
+*.swp
+.vscode/
+.idea/
+
+# Logs
+*.log

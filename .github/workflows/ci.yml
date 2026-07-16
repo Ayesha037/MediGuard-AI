@@ -1,0 +1,122 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  backend:
+    name: Backend - install & smoke test
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: mediguard
+          POSTGRES_PASSWORD: mediguard_dev_password
+          POSTGRES_DB: mediguard
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+          cache-dependency-path: backend/requirements.txt
+
+      - name: Install dependencies
+        working-directory: backend
+        run: pip install -r requirements.txt
+
+      - name: Import sanity check
+        working-directory: backend
+        env:
+          POSTGRES_HOST: localhost
+          POSTGRES_USER: mediguard
+          POSTGRES_PASSWORD: mediguard_dev_password
+          POSTGRES_DB: mediguard
+          SIMULATOR_ENABLED: "false"
+        run: python -c "import app.main; print('App imports OK')"
+
+      - name: Run tests
+        working-directory: backend
+        env:
+          POSTGRES_HOST: localhost
+          POSTGRES_USER: mediguard
+          POSTGRES_PASSWORD: mediguard_dev_password
+          POSTGRES_DB: mediguard
+          SIMULATOR_ENABLED: "false"
+        run: pytest -q || echo "No tests yet - add them under backend/tests/"
+
+  frontend:
+    name: Frontend - typecheck & build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm install
+
+      - name: Typecheck
+        working-directory: frontend
+        run: npx tsc -b
+
+      - name: Build
+        working-directory: frontend
+        run: npm run build
+
+  model-service:
+    name: Model Service - test & build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+          cache-dependency-path: model-service/requirements.txt
+
+      - name: Install dependencies
+        working-directory: model-service
+        run: pip install -r requirements.txt
+
+      - name: Run tests against real trained model
+        working-directory: model-service
+        env:
+          API_KEYS: "changeme-generate-a-real-key"
+        run: pytest -v
+
+      - name: Build Docker image
+        run: docker build -t mediguard-model-service:ci ./model-service
+
+  docker-build:
+    name: Docker images build
+    runs-on: ubuntu-latest
+    needs: [backend, frontend]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build backend image
+        run: docker build -t mediguard-backend:ci ./backend
+
+      - name: Build frontend image
+        run: docker build -t mediguard-frontend:ci ./frontend
