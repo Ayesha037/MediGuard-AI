@@ -4,7 +4,6 @@
 
 MediGuard AI does not predict diseases — it predicts *equipment failures* before they happen, so biomedical engineering teams can act before a ventilator, MRI scanner, infusion pump, or patient monitor goes down.
 
-![Status](https://img.shields.io/badge/status-MVP-blue) ![License](https://img.shields.io/badge/license-MIT-green)
 
 ---
 
@@ -73,6 +72,3 @@ docker compose exec backend python -m app.ml.backfill_predictions
 
 Real hospital equipment failure data isn't publicly available (liability/privacy). This project uses the **Microsoft Azure Predictive Maintenance dataset** (100 industrial machines, hourly telemetry, error logs, maintenance records, and failure events over one year) and the **AI4I 2020 Predictive Maintenance dataset**, relabeled into a medical-equipment vocabulary — see [`docs/model_documentation.md`](docs/model_documentation.md) for the full mapping and an honest discussion of what this means for model quality.
 
-## License
-
-MIT
